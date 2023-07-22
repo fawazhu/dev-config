@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 # Install packages all at once 
-sudo dnf remove --assumeyes vim
-sudo dnf install --assumeyes git gnupg podman python3 python3-pip sqlite3 bzip2 fd-find gcc gdb jq luarocks rsync tmux tree golang make alacritty
+sudo dnf install --assumeyes neovim zsh git gnupg podman python3 python3-pip sqlite3 bzip2 fd-find gcc gdb jq luarocks rsync tmux tree golang make alacritty
 sudo dnf group install --assumeyes "Development Tools"
 
 # Copy ssh and gpg keys
@@ -13,7 +12,7 @@ gpg --import "private.gpg"
 mkdir -p "${HOME}/git/github.com"
 mkdir -p "${HOME}/git/gitlab.com/fawazhup"
 if [[ ! -d "${HOME}/git/gitlab.com/fawazhup/dev-config" ]]; then
-  git clone "git@gitlab.com:fawazhup/dev-config" "${HOME}/git/gitlab.com/fawazhup/dev-config"
+  git clone "https://gitlab.com/fawazhup/dev-config.git" "${HOME}/git/gitlab.com/fawazhup/dev-config"
 fi
 
 # Prepare directories
@@ -39,8 +38,8 @@ systemctl --user enable --now podman.socket
 mkdir -p "${HOME}/git/github.com/nvm-sh"
 git clone "https://github.com/nvm-sh/nvm.git" "${HOME}/git/github.com/nvm-sh/nvm"
 cat << EOF > "${HOME}/.zshrc.d/10-nvm"
-. "${HOME}/git/github.com/nvm-sh/nvm.sh"
-. "${HOME}/git/github.com/nvm-sh/bash_completion"
+. "${HOME}/git/github.com/nvm-sh/nvm/nvm.sh"
+. "${HOME}/git/github.com/nvm-sh/nvm/bash_completion"
 EOF
 ## Install python
 pip3 install pynvim ansible pip
@@ -55,8 +54,10 @@ cat << EOF > "${HOME}/.zshrc.d/10-rust"
 . "$HOME/.cargo/env"
 EOF
 ## Install terraform
+mkdir -p ~/tfswitch
 RELEASE_VERSION="$(curl -s -H 'Accept: application/json' -L 'https://github.com/warrensbox/terraform-switcher/releases/latest' | jq -r '.tag_name')" && curl -s -L "https://github.com/warrensbox/terraform-switcher/releases/download/${RELEASE_VERSION}/terraform-switcher_${RELEASE_VERSION}_linux_amd64.tar.gz" | tar -xvz --directory "${HOME}/tfswitch"
-sudo mv "${HOME}/tfswitch" "/usr/local/bin/tfswitch"
+sudo mv "${HOME}/tfswitch/tfswitch" "/usr/local/bin/tfswitch"
+rm -r "${HOME}/tfswitch"
 sudo chown root:root "/usr/local/bin/tfswitch"
 sudo chmod 755 "/usr/local/bin/tfswitch"
 "/usr/local/bin/tfswitch" -u
@@ -72,7 +73,7 @@ EOF
 mkdir -p "${HOME}/git/github.com/romkatv"
 git clone --depth=1 "https://github.com/romkatv/powerlevel10k.git" "${HOME}/git/github.com/romkatv/powerlevel10k"
 chsh -s "/usr/bin/zsh"
-ln -s "${HOME}/git/gitlab.com/fawazhup/dev-config/zshrc.d" "${HOME}/.zshrc.d"
+cp "${HOME}/git/gitlab.com/fawazhup/dev-config/zshrc.d"/* "${HOME}/.zshrc.d/"
 cat << EOF > "${HOME}/.zshrc.d/10-p10k"
 . "${HOME}/git/github.com/romkatv/powerlevel10k/powerlevel10k.zsh-theme"
 EOF
@@ -91,3 +92,4 @@ curl -sfLO https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetB
 tar -xf JetBrainsMono.tar.xz -C "${HOME}/.local/share/fonts/jetbrains-mono/"
 rm JetBrainsMono.tar.xz
 
+echo "Done"
