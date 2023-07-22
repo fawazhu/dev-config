@@ -1,0 +1,8 @@
+#!/usr/bin/zsh
+
+export EDITOR=/usr/bin/vim
+export TERM=alacritty
+
+alias lla='ls -la'
+alias vim='nvim'
+alias vimdiff='nvim -d'

@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
 # Install packages all at once 
+sudo dnf remove --assumeyes vim
 sudo dnf install --assumeyes git gnupg podman python3 python3-pip sqlite3 bzip2 fd-find gcc gdb jq luarocks rsync tmux tree golang make alacritty
-sudo dnf group install "Development Tools"
+sudo dnf group install --assumeyes "Development Tools"
 
 # Copy ssh and gpg keys
 cp -R "ssh" "${HOME}/.ssh"
@@ -50,6 +51,9 @@ chmod +x "${HOME}/rustup.sh"
 rm "${HOME}/rustup.sh"
 mkdir -p "/usr/share/bash-completion/completions"
 "${HOME}/.cargo/bin/rustup" completions bash > "/usr/share/bash-completion/completions/rustup"
+cat << EOF > "${HOME}/.zshrc.d/10-rust"
+. "$HOME/.cargo/env"
+EOF
 ## Install terraform
 RELEASE_VERSION="$(curl -s -H 'Accept: application/json' -L 'https://github.com/warrensbox/terraform-switcher/releases/latest' | jq -r '.tag_name')" && curl -s -L "https://github.com/warrensbox/terraform-switcher/releases/download/${RELEASE_VERSION}/terraform-switcher_${RELEASE_VERSION}_linux_amd64.tar.gz" | tar -xvz --directory "${HOME}/tfswitch"
 sudo mv "${HOME}/tfswitch" "/usr/local/bin/tfswitch"
