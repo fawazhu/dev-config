@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 
-# Install packages all at once 
-sudo dnf install --assumeyes neovim zsh git gnupg podman python3 python3-pip sqlite3 bzip2 fd-find gcc gdb jq luarocks rsync tmux tree golang make alacritty
-sudo dnf group install --assumeyes "Development Tools"
+# Install packages all at once
+if grep "debian" <<< "$(cat /etc/os-release)"; then
+  sudo apt-get --yes install git vim curl gnupg podman docker-compose python3 python3-pip sqlite3 bzip2 fd-find gcc make automake cmake make g++ gdb jq rsync luarocks tree  tmux golang ripgrep snap pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev zsh
+  sudo snap install core
+  sudo snap install nvim --classic
+elif grep "fedora" <<< "$(cat /etc/os-release)"; then
+  sudo dnf remove --assumeyes vim
+  sudo dnf install --assumeyes git gnupg podman python3 python3-pip sqlite3 bzip2 fd-find gcc gdb jq luarocks rsync tmux tree golang make alacritty
+  sudo dnf group install --assumeyes "Development Tools"
+fi
 
 # Copy ssh and gpg keys
 cp -R "ssh" "${HOME}/.ssh"
@@ -91,5 +98,29 @@ mkdir -p "${HOME}/.local/share/fonts/jetbrains-mono"
 curl -sfLO https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz
 tar -xf JetBrainsMono.tar.xz -C "${HOME}/.local/share/fonts/jetbrains-mono/"
 rm JetBrainsMono.tar.xz
+
+# Manually install alacritty
+if grep "debian" <<< "${os}"; then
+  mkdir -p "${HOME}/git/github.com/alacritty"
+  git clone "https://github.com/alacritty/alacritty.git" "${HOME}/git/github.com/alacritty/alacritty"k
+  cd "${HOME}/git/github.com/alacritty/alacritty"
+  rustup override set stable
+  rustup update stable
+  cargo build --release --no-default-features --features=wayland
+  sudo tic -xe alacritty,alacritty-direct extra/alacritty.info
+  sudo cp target/release/alacritty /usr/local/bin # or anywhere else in $PATH
+  sudo cp extra/logo/alacritty-term.svg /usr/share/pixmaps/Alacritty.svg
+  sudo desktop-file-install extra/linux/Alacritty.desktop
+  sudo update-desktop-database
+  sudo mkdir -p /usr/local/share/man/man1
+  sudo mkdir -p /usr/local/share/man/man5
+  scdoc < extra/man/alacritty.1.scd | gzip -c | sudo tee /usr/local/share/man/man1/alacritty.1.gz > /dev/null
+  scdoc < extra/man/alacritty-msg.1.scd | gzip -c | sudo tee /usr/local/share/man/man1/alacritty-msg.1.gz > /dev/null
+  scdoc < extra/man/alacritty.5.scd | gzip -c | sudo tee /usr/local/share/man/man5/alacritty.5.gz > /dev/null
+  scdoc < extra/man/alacritty-bindings.5.scd | gzip -c | sudo tee /usr/local/share/man/man5/alacritty-bindings.5.gz > /dev/null
+  mkdir -p ~/.bash_completion
+  cp extra/completions/alacritty.bash ~/etc/bash_completion.d/alacritty
+  cd "${HOME}"
+fi
 
 echo "Done"
