@@ -2,12 +2,12 @@
 
 # Install packages all at once
 if grep "debian" <<< "$(cat /etc/os-release)"; then
-  sudo apt-get --yes install git vim curl gnupg podman docker-compose python3 python3-pip python3-venv sqlite3 bzip2 fd-find gcc make automake cmake make g++ gdb jq rsync luarocks tree  tmux golang ripgrep snap pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev zsh scdoc
+  sudo apt-get --yes install git vim curl gnupg podman docker-compose python3 python3-pip python3-venv python3-pynvim sqlite3 bzip2 fd-find gcc make automake cmake make g++ gdb jq rsync luarocks tree  tmux golang ripgrep snap pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev zsh scdoc
   sudo snap install core
   sudo snap install nvim --classic
-  sudo cat << EOF > "/etc/profile.d/snap.sh"
+  sudo bash -c 'cat << EOF > "/etc/profile.d/snap.sh"
 export PATH="${PATH}:/snap/bin"
-EOF
+EOF'
 elif grep "fedora" <<< "$(cat /etc/os-release)"; then
   sudo dnf remove --assumeyes vim
   sudo dnf install --assumeyes git gnupg podman python3 python3-pip sqlite3 bzip2 fd-find gcc gdb jq luarocks rsync tmux tree golang make alacritty
@@ -23,6 +23,9 @@ mkdir -p "${HOME}/git/github.com"
 mkdir -p "${HOME}/git/gitlab.com/fawazhup"
 if [[ ! -d "${HOME}/git/gitlab.com/fawazhup/dev-config" ]]; then
   git clone "https://gitlab.com/fawazhup/dev-config.git" "${HOME}/git/gitlab.com/fawazhup/dev-config"
+  cd "${HOME}/git/gitlab.com/fawazhup/dev-config" || exit 1
+  git remote set-url origin "git@gitlab.com:fawazhup/dev-config.git"
+  cd "${HOME}" || exit 1
 fi
 
 # Prepare directories
@@ -53,7 +56,7 @@ cat << EOF > "${HOME}/.zshrc.d/10-nvm"
 EOF
 . "${HOME}/git/github.com/nvm-sh/nvm/nvm.sh"
 nvm install --lts
-npm install -g npm
+npm install -g npm neovim
 ## Install python
 pip3 install pynvim ansible pip
 ## Install rust
@@ -62,7 +65,7 @@ chmod +x "${HOME}/rustup.sh"
 "${HOME}/rustup.sh" -y
 rm "${HOME}/rustup.sh"
 sudo mkdir -p "/usr/share/bash-completion/completions"
-sudo "${HOME}/.cargo/bin/rustup" completions bash > "/usr/share/bash-completion/completions/rustup"
+sudo "${HOME}/.cargo/bin/rustup" completions bash | sudo tee "/usr/share/bash-completion/completions/rustup" > /dev/null
 cat << EOF > "${HOME}/.zshrc.d/10-rust"
 . "$HOME/.cargo/env"
 EOF
@@ -109,7 +112,7 @@ rm JetBrainsMono.tar.xz
 if grep "debian" <<< "$(cat /etc/os-release)"; then
   mkdir -p "${HOME}/git/github.com/alacritty"
   git clone "https://github.com/alacritty/alacritty.git" "${HOME}/git/github.com/alacritty/alacritty"
-  cd "${HOME}/git/github.com/alacritty/alacritty"
+  cd "${HOME}/git/github.com/alacritty/alacritty" || exit 1
   rustup override set stable
   rustup update stable
   cargo build --release --no-default-features --features=wayland
@@ -125,7 +128,7 @@ if grep "debian" <<< "$(cat /etc/os-release)"; then
   scdoc < extra/man/alacritty.5.scd | gzip -c | sudo tee /usr/local/share/man/man5/alacritty.5.gz > /dev/null
   scdoc < extra/man/alacritty-bindings.5.scd | gzip -c | sudo tee /usr/local/share/man/man5/alacritty-bindings.5.gz > /dev/null
   sudo cp extra/completions/alacritty.bash /etc/bash_completion.d/alacritty
-  cd "${HOME}"
+  cd "${HOME}" || exit 1
 fi
 
 echo "Done"
