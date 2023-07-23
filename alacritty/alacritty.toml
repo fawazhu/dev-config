@@ -3,7 +3,7 @@ family = "JetBrainsMono Nerd Font"
 style = "Regular"
 
 [shell]
-args = ["-ci '/usr/bin/tmux'"]
+args = ["-ci", "/usr/bin/tmux"]
 program = "/usr/bin/zsh"
 
 [window]
