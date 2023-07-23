@@ -5,12 +5,6 @@ vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
 
 -- File management
 vim.keymap.set("n", "<leader>pd", vim.cmd.NvimTreeToggle)
-local telescope = require('telescope.builtin')
-vim.keymap.set('n', '<leader>pf', telescope.find_files, {})
-vim.keymap.set('n', '<leader>pg', telescope.git_files, {})
-vim.keymap.set('n', '<leader>ps', function()
-  telescope.grep_string({ search = vim.fn.input("Grep: ") })
-end)
 
 -- Move lines up and down
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")

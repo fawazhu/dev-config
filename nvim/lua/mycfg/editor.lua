@@ -29,5 +29,3 @@ vim.opt.timeoutlen = 2000
 -- Visual indicators
 vim.opt.colorcolumn = "80"
 
-
-

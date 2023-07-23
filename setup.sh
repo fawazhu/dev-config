@@ -2,9 +2,12 @@
 
 # Install packages all at once
 if grep "debian" <<< "$(cat /etc/os-release)"; then
-  sudo apt-get --yes install git vim curl gnupg podman docker-compose python3 python3-pip sqlite3 bzip2 fd-find gcc make automake cmake make g++ gdb jq rsync luarocks tree  tmux golang ripgrep snap pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev zsh
+  sudo apt-get --yes install git vim curl gnupg podman docker-compose python3 python3-pip python3-venv sqlite3 bzip2 fd-find gcc make automake cmake make g++ gdb jq rsync luarocks tree  tmux golang ripgrep snap pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev zsh scdoc
   sudo snap install core
   sudo snap install nvim --classic
+  sudo cat << EOF > "/etc/profile.d/snap.sh"
+export PATH="${PATH}:/snap/bin"
+EOF
 elif grep "fedora" <<< "$(cat /etc/os-release)"; then
   sudo dnf remove --assumeyes vim
   sudo dnf install --assumeyes git gnupg podman python3 python3-pip sqlite3 bzip2 fd-find gcc gdb jq luarocks rsync tmux tree golang make alacritty
@@ -48,6 +51,9 @@ cat << EOF > "${HOME}/.zshrc.d/10-nvm"
 . "${HOME}/git/github.com/nvm-sh/nvm/nvm.sh"
 . "${HOME}/git/github.com/nvm-sh/nvm/bash_completion"
 EOF
+. "${HOME}/git/github.com/nvm-sh/nvm/nvm.sh"
+nvm install --lts
+npm install -g npm
 ## Install python
 pip3 install pynvim ansible pip
 ## Install rust
@@ -55,8 +61,8 @@ curl --proto '=https' --tlsv1.2 -sSf "https://sh.rustup.rs" > "${HOME}/rustup.sh
 chmod +x "${HOME}/rustup.sh"
 "${HOME}/rustup.sh" -y
 rm "${HOME}/rustup.sh"
-mkdir -p "/usr/share/bash-completion/completions"
-"${HOME}/.cargo/bin/rustup" completions bash > "/usr/share/bash-completion/completions/rustup"
+sudo mkdir -p "/usr/share/bash-completion/completions"
+sudo "${HOME}/.cargo/bin/rustup" completions bash > "/usr/share/bash-completion/completions/rustup"
 cat << EOF > "${HOME}/.zshrc.d/10-rust"
 . "$HOME/.cargo/env"
 EOF
@@ -64,10 +70,10 @@ EOF
 mkdir -p ~/tfswitch
 RELEASE_VERSION="$(curl -s -H 'Accept: application/json' -L 'https://github.com/warrensbox/terraform-switcher/releases/latest' | jq -r '.tag_name')" && curl -s -L "https://github.com/warrensbox/terraform-switcher/releases/download/${RELEASE_VERSION}/terraform-switcher_${RELEASE_VERSION}_linux_amd64.tar.gz" | tar -xvz --directory "${HOME}/tfswitch"
 sudo mv "${HOME}/tfswitch/tfswitch" "/usr/local/bin/tfswitch"
-rm -r "${HOME}/tfswitch"
+sudo rm -r "${HOME}/tfswitch"
 sudo chown root:root "/usr/local/bin/tfswitch"
 sudo chmod 755 "/usr/local/bin/tfswitch"
-"/usr/local/bin/tfswitch" -u
+sudo "/usr/local/bin/tfswitch" -u
 
 # Development tools
 ## Install zsh
@@ -100,9 +106,9 @@ tar -xf JetBrainsMono.tar.xz -C "${HOME}/.local/share/fonts/jetbrains-mono/"
 rm JetBrainsMono.tar.xz
 
 # Manually install alacritty
-if grep "debian" <<< "${os}"; then
+if grep "debian" <<< "$(cat /etc/os-release)"; then
   mkdir -p "${HOME}/git/github.com/alacritty"
-  git clone "https://github.com/alacritty/alacritty.git" "${HOME}/git/github.com/alacritty/alacritty"k
+  git clone "https://github.com/alacritty/alacritty.git" "${HOME}/git/github.com/alacritty/alacritty"
   cd "${HOME}/git/github.com/alacritty/alacritty"
   rustup override set stable
   rustup update stable
@@ -118,8 +124,7 @@ if grep "debian" <<< "${os}"; then
   scdoc < extra/man/alacritty-msg.1.scd | gzip -c | sudo tee /usr/local/share/man/man1/alacritty-msg.1.gz > /dev/null
   scdoc < extra/man/alacritty.5.scd | gzip -c | sudo tee /usr/local/share/man/man5/alacritty.5.gz > /dev/null
   scdoc < extra/man/alacritty-bindings.5.scd | gzip -c | sudo tee /usr/local/share/man/man5/alacritty-bindings.5.gz > /dev/null
-  mkdir -p ~/.bash_completion
-  cp extra/completions/alacritty.bash ~/etc/bash_completion.d/alacritty
+  sudo cp extra/completions/alacritty.bash /etc/bash_completion.d/alacritty
   cd "${HOME}"
 fi
 
