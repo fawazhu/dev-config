@@ -34,12 +34,14 @@ vim.keymap.set("n", "<leader>rt", vim.lsp.buf.rename)
 vim.keymap.set("v", "<leader>rt", vim.lsp.buf.rename)
 
 -- LSP
-vim.keymap.set("n", "<leader>lD", vim.lsp.buf.declaration)
-vim.keymap.set("n", "<leader>ld", vim.lsp.buf.definition)
+vim.keymap.set("n", "<leader>ld", vim.lsp.buf.declaration)
+vim.keymap.set("n", "<leader>lD", vim.lsp.buf.definition)
 vim.keymap.set("n", "<leader>lh", vim.lsp.buf.hover)
 vim.keymap.set("n", "<leader>li", vim.lsp.buf.implementation)
 vim.keymap.set("n", "<leader>lc", vim.lsp.buf.code_action)
 vim.keymap.set("n", "<leader>lr", vim.lsp.buf.references)
+vim.keymap.set("i", "<c-h>", vim.lsp.buf.hover)
+vim.keymap.set("n", "<c-h>", vim.lsp.buf.hover)
 
 -- Errors
 vim.keymap.set("n", "<leader>ee", "<cmd>TroubleToggle<cr>", { noremap = true })
@@ -48,38 +50,13 @@ vim.keymap.set("n", "<leader>eq", "<cmd>TroubleToggle quickfix<cr>", { noremap =
 -- Git
 vim.keymap.set('n', '<leader>gd', '<cmd>Gitsigns diffthis<cr>')
 vim.keymap.set('n', '<leader>gf', ':DiffviewFileHistory %<cr>')
-vim.keymap.set('n', '<leader>gb', ':DiffviewFileHistory<cr>')
+vim.keymap.set('n', '<leader>gb', ':Dif,fviewFileHistory<cr>')
 vim.keymap.set('n', '<leader>gc', ':DiffviewClose<cr>')
 vim.keymap.set('n', '<leader>gs', '<cmd>Git<cr>')
 vim.keymap.set('n', '<leader>ga', ':Git add <c-r>%<cr>')
-
--- Tabs
-vim.keymap.set('n', '<leader>th', '<Cmd>BufferPrevious<CR>')
-vim.keymap.set('n', '<leader>tl', '<Cmd>BufferNext<CR>')
-vim.keymap.set('n', '<leader>tH', '<Cmd>BufferMovePrevious<CR>')
-vim.keymap.set('n', '<leader>tL', '<Cmd>BufferMoveNext<CR>')
-vim.keymap.set('n', '<leader>tc', '<Cmd>BufferClose<CR>')
-
--- Integrated Terminal
-function _G.set_terminal_keymaps()
-  local opts = {buffer = 0}
-  vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts)
-  vim.keymap.set('n', '<C-h>', [[<Cmd>wincmd h<CR>]], opts)
-  vim.keymap.set('n', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
-  vim.keymap.set('n', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)
-  vim.keymap.set('n', '<C-l>', [[<Cmd>wincmd l<CR>]], opts)
-  vim.keymap.set('n', '<C-w>', [[<C-\><C-n><C-w>]], opts)
-end
-vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
-vim.keymap.set('n', '<leader>zz', ':ToggleTerm<cr>')
-vim.keymap.set('n', '<leader>za', ':ToggleTerm<cr>')
-vim.keymap.set('n', '<leader>zn', ':ToggleTerm direction=horizontal<cr>')
-vim.keymap.set('n', '<leader>zt', ':ToggleTerm direction=tab<cr>')
-vim.keymap.set('n', '<leader>zh', ':ToggleTerm direction=hover<cr>')
 
 -- Better scrolling
 vim.keymap.set('n', '<c-j>', '<c-d>zz')
 vim.keymap.set('n', '<c-k>', '<c-u>zz')
 vim.keymap.set('n', 'n', 'nzzzv')
 vim.keymap.set('n', 'N', 'Nzzzv')
-

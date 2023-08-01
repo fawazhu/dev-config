@@ -26,7 +26,7 @@ return require('packer').startup(function(use)
     requires = {
       -- LSP Support
       { 'neovim/nvim-lspconfig' }, -- Required
-      {                          -- Optional
+      {                            -- Optional
         'williamboman/mason.nvim',
         run = function()
           pcall(vim.cmd, 'MasonUpdate')
@@ -35,9 +35,9 @@ return require('packer').startup(function(use)
       { 'williamboman/mason-lspconfig.nvim' }, -- Optional
 
       -- Autocompletion
-      { 'hrsh7th/nvim-cmp' },   -- Required
+      { 'hrsh7th/nvim-cmp' },     -- Required
       { 'hrsh7th/cmp-nvim-lsp' }, -- Required
-      { 'L3MON4D3/LuaSnip' },   -- Required
+      { 'L3MON4D3/LuaSnip' },     -- Required
     }
   }
 
@@ -69,16 +69,11 @@ return require('packer').startup(function(use)
 
   use "sindrets/diffview.nvim"
 
-  use 'm4xshen/autoclose.nvim'
-
-  use 'romgrk/barbar.nvim'
-
-  use 'akinsho/toggleterm.nvim'
-
-  use { 'codota/tabnine-nvim', run = "./dl_binaries.sh" }
-
   use 'tpope/vim-fugitive'
 
   use 'ThePrimeagen/vim-be-good'
-end)
 
+  use 'ThePrimeagen/harpoon'
+
+  use { 'codota/tabnine-nvim', run = "./dl_binaries.sh" }
+end)

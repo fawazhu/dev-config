@@ -1,0 +1,11 @@
+import:
+  - ~/.config/alacritty/catppuccin/catppuccin-mocha.yml
+font:
+  normal:
+    family: "JetBrainsMono Nerd Font"
+    style: "Regular"
+shell:
+  args:
+    - "-ci"
+    - "/usr/bin/tmux"
+  program: "/usr/bin/zsh"

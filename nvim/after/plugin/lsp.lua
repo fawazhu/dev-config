@@ -1,7 +1,7 @@
 local lsp = require('lsp-zero').preset({})
 
-lsp.on_attach(function(client, bufnr)
-  lsp.default_keymaps({buffer = bufnr})
+lsp.on_attach(function(_, bufnr)
+  lsp.default_keymaps({ buffer = bufnr })
 end)
 
 -- (Optional) Configure lua language server for neovim
@@ -15,15 +15,21 @@ local cmp_action = require('lsp-zero').cmp_action()
 
 cmp.setup({
   mapping = {
-    -- `Enter` key to confirm completion
-    ['<CR>'] = cmp.mapping.confirm({select = false}),
+    ["<C-y>"] = cmp.mapping(function()
+      if cmp.visible() then
+        local entry = cmp.get_selected_entry()
+        if not entry then
+          cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+          cmp.confirm()
+        else
+          cmp.confirm()
+        end
+      else
+        cmp.confirm()
+      end
+    end, { "i", "s", "c", }),
 
-    -- Ctrl+Space to trigger completion menu
-    ['<C-Space>'] = cmp.mapping.complete(),
-
-    -- Navigate between snippet placeholder
     ['<C-f>'] = cmp_action.luasnip_jump_forward(),
     ['<C-b>'] = cmp_action.luasnip_jump_backward(),
   }
 })
-
