@@ -1,5 +1,9 @@
 vim.g.mapleader = " "
 
+-- Unset keybindings
+vim.keymap.set("n", "Q", "<nop>")
+vim.keymap.set("i", "<c-y>", "<nop>")
+
 -- Undo mapping
 vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
 
@@ -18,8 +22,6 @@ vim.keymap.set("n", "<leader>y", "\"+y")
 vim.keymap.set("v", "<leader>y", "\"+y")
 vim.keymap.set("n", "<leader>Y", "\"+Y")
 
--- Disable Q
-vim.keymap.set("n", "Q", "<nop>")
 
 -- Format
 vim.keymap.set("n", "<leader>ff", function()
